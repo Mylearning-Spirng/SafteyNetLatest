@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassroom.safteynetalertsrefactor.model.FireStation;
 import com.openclassroom.safteynetalertsrefactor.service.FireStationService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-class FirestationControllerTest {
+class FireStationControllerTest {
 
     private MockMvc mockMvc;
     private FireStationService firestationService;
@@ -54,7 +53,8 @@ class FirestationControllerTest {
 
         assertEquals(200, result.getResponse().getStatus());
         String content = result.getResponse().getContentAsString();
-        List<FireStation> stations = objectMapper.readValue(content, new TypeReference<List<FireStation>>() {});
+        List<FireStation> stations = objectMapper.readValue(content, new TypeReference<List<FireStation>>() {
+        });
         assertEquals(1, stations.size());
         assertEquals("1509CulverSt", stations.get(0).getAddress());
         assertEquals(3, stations.get(0).getStation());
@@ -102,19 +102,30 @@ class FirestationControllerTest {
     }
 
     @Test
-    @Disabled
-    void deleteFirestation_shouldReturnOk() throws Exception {
-        Mockito.when(firestationService.deleteByAddress("1509CulverSt")).thenReturn(true);
+    void deleteFireStationByAddress_shouldReturnOk() throws Exception {
+        Mockito.when(firestationService.deleteByAddress("1509 Culver St")).thenReturn(true);
 
-        MvcResult result = mockMvc.perform(delete("/firestation")
-                        .param("address", "1509CulverSt"))
+        MvcResult result = mockMvc.perform(delete("/firestations/address/1509 Culver St"))
                 .andReturn();
 
         assertEquals(200, result.getResponse().getStatus());
-        String content = result.getResponse().getContentAsString();
-        Boolean deleted = objectMapper.readValue(content, Boolean.class);
+        Boolean deleted = objectMapper.readValue(result.getResponse().getContentAsString(), Boolean.class);
         assertTrue(deleted);
 
-        verify(firestationService, times(1)).deleteByAddress("1509CulverSt");
+        verify(firestationService, times(1)).deleteByAddress("1509 Culver St");
+    }
+
+    @Test
+    void deleteFireStationByStationNumber_shouldReturnOk() throws Exception {
+        Mockito.when(firestationService.deleteByStationNumber(2)).thenReturn(true);
+
+        MvcResult result = mockMvc.perform(delete("/firestations/station/2"))
+                .andReturn();
+
+        assertEquals(200, result.getResponse().getStatus());
+        Boolean deleted = objectMapper.readValue(result.getResponse().getContentAsString(), Boolean.class);
+        assertTrue(deleted);
+        verify(firestationService, times(1)).deleteByStationNumber(2);
     }
 }
+

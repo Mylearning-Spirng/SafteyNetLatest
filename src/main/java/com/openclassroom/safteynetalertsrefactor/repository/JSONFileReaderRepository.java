@@ -1,4 +1,3 @@
-// java
 package com.openclassroom.safteynetalertsrefactor.repository;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,14 +35,14 @@ public class JSONFileReaderRepository {
     }
 
     // Read JsonNode from external file if exists, otherwise from classpath
-    public JsonNode readJson(){
+    public JsonNode readJson() {
         return readFromExternalFile().orElseGet(this::readFromClasspath);
     }
 
 
-    private Optional<JsonNode>readFromExternalFile(){
-        if(Files.exists(writePath)){
-            try(InputStream in = Files.newInputStream(writePath)){
+    private Optional<JsonNode> readFromExternalFile() {
+        if (Files.exists(writePath)) {
+            try (InputStream in = Files.newInputStream(writePath)) {
                 return Optional.of(objectMapper.readTree(in));
             } catch (IOException e) {
                 log.error("Error reading JSON from external file", e);
@@ -53,9 +52,9 @@ public class JSONFileReaderRepository {
     }
 
 
-    private JsonNode readFromClasspath(){
-        try(InputStream in = getClass().getClassLoader().getResourceAsStream(classpathResource)){
-            if(in == null){
+    private JsonNode readFromClasspath() {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(classpathResource)) {
+            if (in == null) {
                 log.warn("Classpath resource {} not found, returning empty object node", classpathResource);
                 return objectMapper.createObjectNode();
             }
@@ -75,12 +74,12 @@ public class JSONFileReaderRepository {
             }
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(writePath.toFile(), root);
         } catch (IOException e) {
-            log.error("Error writing JSON to file: {}",writePath, e);
-            throw new RuntimeException("Failed to write JSON file",e);
+            log.error("Error writing JSON to file: {}", writePath, e);
+            throw new RuntimeException("Failed to write JSON file", e);
         }
     }
 
-// Read a list of objects from a JSON array and convert them to a List<T>
+    // Read a list of objects from a JSON array and convert them to a List<T>
     public <T> List<T> readList(String arrayName, Class<T> elementType) {
         JsonNode arrayNode = readJson().path(arrayName);
         if (!arrayNode.isArray() || arrayNode.isEmpty()) {
@@ -92,7 +91,7 @@ public class JSONFileReaderRepository {
         );
     }
 
-//    Convert a List<T> to a JSON array and write it to the JSON file
+    //    Convert a List<T> to a JSON array and write it to the JSON file
     public <T> void writeList(String arrayName, List<T> items) {
         JsonNode root = readJson();
         ObjectNode objectNode = root.isObject() ? (ObjectNode) root : objectMapper.createObjectNode();

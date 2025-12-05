@@ -44,6 +44,7 @@ class JSONFileReaderTest {
         assert rootNode.get("persons").isArray();
         assert rootNode.get("persons").get(0).get("firstName").asText().equals("John");
     }
+
     @Test
     void testReadFromExternalFile() {
         var rootNode = jsonFileReaderRepository.readJson();

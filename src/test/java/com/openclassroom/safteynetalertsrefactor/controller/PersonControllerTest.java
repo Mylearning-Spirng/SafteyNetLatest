@@ -58,7 +58,8 @@ class PersonControllerTest {
 
         assertEquals(200, result.getResponse().getStatus());
         String content = result.getResponse().getContentAsString();
-        List<Person> persons = objectMapper.readValue(content, new TypeReference<List<Person>>() {});
+        List<Person> persons = objectMapper.readValue(content, new TypeReference<List<Person>>() {
+        });
         assertEquals(1, persons.size());
         assertEquals("John", persons.get(0).getFirstName());
         assertEquals("Doe", persons.get(0).getLastName());

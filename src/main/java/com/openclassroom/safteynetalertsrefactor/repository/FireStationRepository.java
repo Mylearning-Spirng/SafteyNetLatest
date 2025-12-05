@@ -36,7 +36,7 @@ public class FireStationRepository {
         persist();
     }
 
-    public Optional <FireStation> findByAddress(String address) {
+    public Optional<FireStation> findByAddress(String address) {
         for (FireStation fs : firestations) {
             if (fs.getAddress().equals(address)) {
                 return Optional.of(fs);

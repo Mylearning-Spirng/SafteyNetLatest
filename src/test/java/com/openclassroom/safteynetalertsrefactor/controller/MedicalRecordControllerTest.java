@@ -56,7 +56,8 @@ class MedicalRecordControllerTest {
 
         assertEquals(200, result.getResponse().getStatus());
         String content = result.getResponse().getContentAsString();
-        List<MedicalRecord> records = objectMapper.readValue(content, new TypeReference<List<MedicalRecord>>() {});
+        List<MedicalRecord> records = objectMapper.readValue(content, new TypeReference<List<MedicalRecord>>() {
+        });
         assertEquals(1, records.size());
         assertEquals("John", records.get(0).getFirstName());
         assertEquals("Doe", records.get(0).getLastName());

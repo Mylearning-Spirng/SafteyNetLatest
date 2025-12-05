@@ -1,4 +1,5 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
+
 import com.openclassroom.safteynetalertsrefactor.model.FireStation;
 import com.openclassroom.safteynetalertsrefactor.service.FireStationService;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,13 @@ public class FireStationController {
     }
 
     @PostMapping
-    public FireStation addFireStation(@RequestBody FireStation fireStation){
+    public FireStation addFireStation(@RequestBody FireStation fireStation) {
         return fireStationService.addFireStation(fireStation);
     }
 
     @PutMapping("/{address}")
-    public ResponseEntity<Boolean>updateFireStation(@PathVariable String address,
-                              @RequestBody FireStation updated) {
+    public ResponseEntity<Boolean> updateFireStation(@PathVariable String address,
+                                                     @RequestBody FireStation updated) {
         boolean ok = fireStationService.updateFireStation(address, updated);
         return ok ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }

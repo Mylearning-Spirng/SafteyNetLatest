@@ -22,10 +22,10 @@ public class PersonRepository {
 
     @PostConstruct
     void init() {
-            List<Person> loaded = JSONFileReaderRepository.readList(p, Person.class);
-            if (loaded != null) {
-                persons.addAll(loaded);
-            }
+        List<Person> loaded = JSONFileReaderRepository.readList(p, Person.class);
+        if (loaded != null) {
+            persons.addAll(loaded);
+        }
     }
 
     public List<Person> findAll() {
@@ -46,7 +46,7 @@ public class PersonRepository {
         return Optional.empty();
     }
 
-    public boolean deletePerson (String firstName, String lastName) {
+    public boolean deletePerson(String firstName, String lastName) {
         Optional<Person> personToDelete = findByName(firstName, lastName);
         if (personToDelete.isEmpty()) {
             return false;
@@ -58,4 +58,5 @@ public class PersonRepository {
 
     public void persist() {
         JSONFileReaderRepository.writeList(p, persons);
-    }}
+    }
+}

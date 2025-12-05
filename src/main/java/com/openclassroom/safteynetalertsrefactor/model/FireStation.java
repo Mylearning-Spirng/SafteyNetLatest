@@ -1,4 +1,5 @@
 package com.openclassroom.safteynetalertsrefactor.model;
+
 import lombok.*;
 
 @Getter
