@@ -44,6 +44,7 @@ public class FireStationController {
     public ResponseEntity<Boolean> deleteByStationNumber(@PathVariable int stationNumber) {
         boolean deleted = fireStationService.deleteByStationNumber(stationNumber);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
+
     }
 
 }
