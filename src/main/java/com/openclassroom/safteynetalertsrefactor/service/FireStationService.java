@@ -64,7 +64,7 @@ public class FireStationService {
             if (deleted) {
                 log.info("Delete successful for address='{}'", address);
             } else {
-                log.warn("Delete failed - not found for address='{}'", address);
+                log.warn("Delete failed - data not found for address='{}'", address);
             }
             return deleted;
         } catch (Exception e) {
