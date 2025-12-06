@@ -1,13 +1,12 @@
 package com.openclassroom.safteynetalertsrefactor.service;
 
-import com.openclassroom.safteynetalertsrefactor.DTO.FirstResponderDto;
+import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.model.FireStation;
 import com.openclassroom.safteynetalertsrefactor.model.MedicalRecord;
 import com.openclassroom.safteynetalertsrefactor.model.Person;
 import com.openclassroom.safteynetalertsrefactor.repository.FireStationRepository;
 import com.openclassroom.safteynetalertsrefactor.repository.MedicalRecordsRepository;
 import com.openclassroom.safteynetalertsrefactor.repository.PersonRepository;
-import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

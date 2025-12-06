@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service for managing Person records.
+ */
 @Slf4j
 @Service
 public class PersonService {
@@ -18,6 +21,11 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
+    /**
+     * Get all Person Records
+     *
+     * @return List of all Persons
+     */
     public List<Person> getAllPersons() {
         log.info("GET /persons - request received");
         try {
@@ -30,6 +38,12 @@ public class PersonService {
         }
     }
 
+    /**
+     * Add a new Person Record
+     *
+     * @param person Person to add
+     * @return Added Person
+     */
     public Person addPerson(Person person) {
         log.info("POST /persons - add requested for {} {}", person.getFirstName(), person.getLastName());
         try {

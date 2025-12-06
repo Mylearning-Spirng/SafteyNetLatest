@@ -1,4 +1,4 @@
-package com.openclassroom.safteynetalertsrefactor.DTO;
+package com.openclassroom.safteynetalertsrefactor.dto;
 
 import lombok.*;
 import java.util.List;

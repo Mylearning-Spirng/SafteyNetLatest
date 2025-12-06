@@ -1,6 +1,6 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
 
-import com.openclassroom.safteynetalertsrefactor.DTO.FirstResponderDto;
+import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package com.openclassroom.safteynetalertsrefactor.service;
 
-import com.openclassroom.safteynetalertsrefactor.DTO.*;
+import com.openclassroom.safteynetalertsrefactor.dto.*;
 import com.openclassroom.safteynetalertsrefactor.model.FireStation;
 import com.openclassroom.safteynetalertsrefactor.model.MedicalRecord;
 import com.openclassroom.safteynetalertsrefactor.model.Person;
@@ -37,10 +37,10 @@ public class FirstResponderService {
         return null;
     }
 
-    private int ageOf(String firstName, String lastName) {
+    private int calculateAgeOf(String firstName, String lastName) {
         MedicalRecord mr = findMedicalRecord(firstName, lastName);
         if (mr == null) return 0;
-        return AgeCalculatorDto.calculateAge(mr.getBirthdate());
+        return mr.calculateAge();
     }
 
 //    ............................list of people covered by the corresponding fire station.............................
@@ -61,7 +61,7 @@ public class FirstResponderService {
         // for each person, check if address is in those addresses
         for (Person p : personRepository.findAll()) {
             if (addresses.contains(p.getAddress())) {
-                int age = ageOf(p.getFirstName(), p.getLastName());
+                int age = calculateAgeOf(p.getFirstName(), p.getLastName());
                 // children if age 18 or younger -> adult if age > 18
                 if (age > 18) {
                     adults++;
