@@ -1,6 +1,6 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
 
-import com.openclassroom.safteynetalertsrefactor.DTO.FireStationCoverageDto;
+import com.openclassroom.safteynetalertsrefactor.DTO.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ public class FirstResponderController {
     }
 
     @GetMapping("/firestation")
-    public FireStationCoverageDto getFirestation(@RequestParam int stationNumber) {
+    public FirstResponderDto getFirestation(@RequestParam int stationNumber) {
         return service.getPersonsByStation(stationNumber);
     }
 

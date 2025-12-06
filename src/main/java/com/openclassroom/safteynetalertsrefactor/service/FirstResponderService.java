@@ -45,7 +45,7 @@ public class FirstResponderService {
 
 //    ............................list of people covered by the corresponding fire station.............................
 
-    public FireStationCoverageDto getPersonsByStation(int stationNumber) {
+    public FirstResponderDto getPersonsByStation(int stationNumber) {
         List<PersonDto> personsCovered = new ArrayList<>();
         int adults = 0;
         int children = 0;
@@ -80,6 +80,6 @@ public class FirstResponderService {
             }
         }
 
-        return new FireStationCoverageDto(personsCovered, adults, children);
+        return new FirstResponderDto(personsCovered, adults, children);
     }
 }

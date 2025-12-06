@@ -1,6 +1,6 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
 
-import com.openclassroom.safteynetalertsrefactor.DTO.FireStationCoverageDto;
+import com.openclassroom.safteynetalertsrefactor.DTO.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +25,11 @@ public class FirstResponderControllerTest {
     @Test
     void getFirestation_returnsDto_and_callsService() {
         int stationNumber = 2;
-        FireStationCoverageDto dto = Mockito.mock(FireStationCoverageDto.class);
+        FirstResponderDto dto = Mockito.mock(FirstResponderDto.class);
 
         Mockito.when(service.getPersonsByStation(stationNumber)).thenReturn(dto);
 
-        FireStationCoverageDto result = controller.getFirestation(stationNumber);
+        FirstResponderDto result = controller.getFirestation(stationNumber);
 
         assertSame(dto, result);
         verify(service, times(1)).getPersonsByStation(stationNumber);
