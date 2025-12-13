@@ -1,6 +1,8 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
 
+import com.openclassroom.safteynetalertsrefactor.dto.ChildResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
+import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.times;
@@ -33,5 +37,57 @@ public class FirstResponderControllerTest {
 
         assertSame(dto, result);
         verify(service, times(1)).getPersonsByStation(stationNumber);
+    }
+
+    @Test
+    void getChildAlert_returnsList_and_callsService() {
+        String address = "1509 Culver St";
+        List<ChildResidentDto> dtoList = List.of(Mockito.mock(ChildResidentDto.class));
+
+        Mockito.when(service.getChildrenByAddress(address)).thenReturn(dtoList);
+
+        List<ChildResidentDto> result = controller.getChildAlert(address);
+
+        assertSame(dtoList, result);
+        verify(service, times(1)).getChildrenByAddress(address);
+    }
+
+    @Test
+    void getPhoneAlert_returnsList_and_callsService() {
+        int stationNumber = 3;
+        List<String> phones = List.of("555-1234");
+
+        Mockito.when(service.getPhoneAlert(stationNumber)).thenReturn(phones);
+
+        List<String> result = controller.getPhoneAlert(stationNumber);
+
+        assertSame(phones, result);
+        verify(service, times(1)).getPhoneAlert(stationNumber);
+    }
+
+    @Test
+    void getFire_returnsList_and_callsService() {
+        String address = "29 15th St";
+        List<ResidentDto> residents = List.of(Mockito.mock(ResidentDto.class));
+
+        Mockito.when(service.getFireInfo(address)).thenReturn(residents);
+
+        List<ResidentDto> result = controller.getFire(address);
+
+        assertSame(residents, result);
+        verify(service, times(1)).getFireInfo(address);
+    }
+
+    @Test
+    void getCommunityEmail_returnsList_and_callsService() {
+        String city = "Culver";
+        List<String> emails = List.of("a@example.com");
+
+        Mockito.when(service.getCommunityEmail(city)).thenReturn(emails);
+
+        List<String> result = controller.getCommunityEmail(city);
+
+        assertSame(emails, result);
+        verify(service, times(1)).getCommunityEmail(city);
     }
 }

@@ -47,12 +47,29 @@ class PersonServiceTest {
     }
 
     @Test
+    void getAllPersons_shouldPropagateExceptionWhenRepositoryThrows() {
+        when(personRepository.findAll()).thenThrow(new RuntimeException("boom"));
+
+        assertThrows(RuntimeException.class, () -> personService.getAllPersons());
+        verify(personRepository, times(1)).findAll();
+    }
+
+    @Test
     void addPerson_shouldCallRepositoryAndReturnPerson() {
         Person person = samplePerson();
 
         Person returned = personService.addPerson(person);
 
         assertEquals(person, returned);
+        verify(personRepository, times(1)).add(person);
+    }
+
+    @Test
+    void addPerson_shouldPropagateExceptionWhenRepositoryThrows() {
+        Person person = samplePerson();
+        doThrow(new RuntimeException("add fail")).when(personRepository).add(any());
+
+        assertThrows(RuntimeException.class, () -> personService.addPerson(person));
         verify(personRepository, times(1)).add(person);
     }
 
@@ -93,6 +110,24 @@ class PersonServiceTest {
     }
 
     @Test
+    void updatePerson_shouldPropagateExceptionWhenFindByNameThrows() {
+        when(personRepository.findByName("John", "Doe")).thenThrow(new RuntimeException("find fail"));
+
+        assertThrows(RuntimeException.class, () -> personService.updatePerson("John", "Doe", samplePerson()));
+        verify(personRepository, times(1)).findByName("John", "Doe");
+    }
+
+    @Test
+    void updatePerson_shouldPropagateExceptionWhenPersistThrows() {
+        Person existing = samplePerson();
+        when(personRepository.findByName("John", "Doe")).thenReturn(Optional.of(existing));
+        doThrow(new RuntimeException("persist fail")).when(personRepository).persist();
+
+        assertThrows(RuntimeException.class, () -> personService.updatePerson("John", "Doe", samplePerson()));
+        verify(personRepository, times(1)).persist();
+    }
+
+    @Test
     void delete_shouldDelegateToRepository() {
         when(personRepository.deletePerson("John", "Doe")).thenReturn(true);
 
@@ -101,5 +136,23 @@ class PersonServiceTest {
         assertTrue(deleted);
         verify(personRepository, times(1))
                 .deletePerson("John", "Doe");
+    }
+
+    @Test
+    void delete_shouldReturnFalseWhenNotFound() {
+        when(personRepository.deletePerson("John", "Doe")).thenReturn(false);
+
+        boolean deleted = personService.delete("John", "Doe");
+
+        assertFalse(deleted);
+        verify(personRepository, times(1)).deletePerson("John", "Doe");
+    }
+
+    @Test
+    void delete_shouldPropagateExceptionWhenRepositoryThrows() {
+        when(personRepository.deletePerson("John", "Doe")).thenThrow(new RuntimeException("delete fail"));
+
+        assertThrows(RuntimeException.class, () -> personService.delete("John", "Doe"));
+        verify(personRepository, times(1)).deletePerson("John", "Doe");
     }
 }

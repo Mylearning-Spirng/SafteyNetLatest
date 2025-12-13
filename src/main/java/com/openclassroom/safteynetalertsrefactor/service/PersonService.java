@@ -56,6 +56,14 @@ public class PersonService {
         }
     }
 
+    /**
+     * Update an existing Person Record
+     *
+     * @param firstName     First name of the person to update
+     * @param lastName      Last name of the person to update
+     * @param updatedPerson Updated Person data
+     * @return true if update was successful, false if person not found
+     */
     public boolean updatePerson(String firstName, String lastName, Person updatedPerson) {
         log.info("PUT /persons - update requested for {} {}", firstName, lastName);
         try {
@@ -79,6 +87,13 @@ public class PersonService {
         }
     }
 
+    /**
+     * Delete a Person Record
+     *
+     * @param firstName First name of the person to delete
+     * @param lastName  Last name of the person to delete
+     * @return true if deletion was successful, false if person not found
+     */
     public boolean delete(String firstName, String lastName) {
         log.info("DELETE /persons - delete requested for {} {}", firstName, lastName);
         try {
