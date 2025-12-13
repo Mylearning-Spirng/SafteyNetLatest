@@ -19,31 +19,32 @@ public class FirstResponderController {
         this.service = service;
     }
 
+    /* Endpoint mappings for First Responder functionalities */
+    /* Retrieve persons covered by a fire station */
     @GetMapping("/firestation")
     public FirstResponderDto getFirestation(@RequestParam int stationNumber) {
         return service.getPersonsByStation(stationNumber);
     }
 
+    /* Retrieve children at a given address */
     @GetMapping("/childAlert")
     public List<ChildResidentDto> getChildAlert(@RequestParam String address) {
         return service.getChildrenByAddress(address);
     }
 
+    /* Retrieve phone numbers for a fire station */
     @GetMapping("/phoneAlert")
     public List<String> getPhoneAlert(@RequestParam("firestation") int stationNumber) {
         return service.getPhoneAlert(stationNumber);
     }
 
-    @GetMapping("/fire/{address}")
-    public List<ResidentDto> getFire(@PathVariable String address) {
+    /* Retrieve fire information for a given address */
+    @GetMapping("/fire")
+    public List<ResidentDto> getFire(@RequestParam("address") String address) {
         return service.getFireInfo(address);
     }
 
-//    @GetMapping("/fire")
-//    public List<ResidentDto> getFire(@RequestParam("address") String address) {
-//        return service.getFireInfo(address);
-//    }
-
+    /* Retrieve community emails for a given city */
     @GetMapping("/communityEmail")
     public List<String> getCommunityEmail(@RequestParam String city) {
         return service.getCommunityEmail(city);

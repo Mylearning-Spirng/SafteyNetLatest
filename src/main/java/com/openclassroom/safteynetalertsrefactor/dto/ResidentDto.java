@@ -9,6 +9,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+/* DTO representing a resident's detailed information including
+   name, phone, age, medications, and allergies.
+*/
 public class ResidentDto {
     private String firstName;
     private String lastName;

@@ -17,6 +17,10 @@ public class FireStationService {
         this.fireStationRepository = fireStationRepository;
     }
 
+    /** Retrieve all fire stations.
+     *
+     * @return List of all FireStation entities.
+     */
     public List<FireStation> getAllFireStations() {
         log.info("GET all fire stations requested");
         try {
@@ -29,6 +33,11 @@ public class FireStationService {
         }
     }
 
+    /** Add a new fire station.
+     *
+     * @param fireStation FireStation entity to add.
+     * @return The added FireStation entity.
+     */
     public FireStation addFireStation(FireStation fireStation) {
         log.info("Add fire station requested: address='{}', station='{}'", fireStation.getAddress(), fireStation.getStation());
         try {
@@ -41,6 +50,12 @@ public class FireStationService {
         }
     }
 
+    /** Update an existing fire station.
+     *
+     * @param address Address of the fire station to update.
+     * @param updated FireStation entity with updated data.
+     * @return true if update was successful, false if not found.
+     */
     public boolean updateFireStation(String address, FireStation updated) {
         log.info("Update fire station requested for address='{}' -> station='{}'", address, updated.getStation());
         try {
@@ -57,6 +72,11 @@ public class FireStationService {
         }
     }
 
+    /** Delete a fire station by address.
+     *
+     * @param address Address of the fire station to delete.
+     * @return true if deletion was successful, false if not found.
+     */
     public boolean deleteByAddress(String address) {
         log.info("Delete fire station requested for address='{}'", address);
         try {
@@ -73,6 +93,11 @@ public class FireStationService {
         }
     }
 
+    /** Delete fire stations by station number.
+     *
+     * @param stationNumber Station number of the fire stations to delete.
+     * @return true if deletion was successful, false if no entries found.
+     */
     public boolean deleteByStationNumber(int stationNumber) {
         log.info("Delete fire station(s) requested for stationNumber={}", stationNumber);
         try {

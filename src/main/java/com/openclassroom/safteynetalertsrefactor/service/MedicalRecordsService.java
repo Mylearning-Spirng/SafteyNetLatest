@@ -16,6 +16,11 @@ public class MedicalRecordsService {
         this.medicalRecordsRepository = medicalRecordsRepository;
     }
 
+    /**
+     * Retrieve all medical records.
+     *
+     * @return List of all MedicalRecord entities.
+     */
     public List<MedicalRecord> getAllMedicalRecords() {
         log.info("GET /medicalRecords - request received");
         try {
@@ -28,6 +33,12 @@ public class MedicalRecordsService {
         }
     }
 
+    /**
+     * Add a new medical record.
+     *
+     * @param medicalRecord MedicalRecord entity to add.
+     * @return The added MedicalRecord entity.
+     */
     public MedicalRecord addMedicalRecords(MedicalRecord medicalRecord) {
         log.info("POST /medicalRecords - add requested for {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
         try {
@@ -40,6 +51,14 @@ public class MedicalRecordsService {
         }
     }
 
+    /**
+     * Update an existing medical record.
+     *
+     * @param firstName            First name of the medical record to update.
+     * @param lastName             Last name of the medical record to update.
+     * @param updatedMedicalRecord MedicalRecord entity with updated data.
+     * @return true if update was successful, false if not found.
+     */
     public boolean updateMedicalRecord(String firstName, String lastName, MedicalRecord updatedMedicalRecord) {
         log.info("PUT /medicalRecords - update requested for {} {}", firstName, lastName);
         try {
@@ -56,6 +75,13 @@ public class MedicalRecordsService {
         }
     }
 
+    /**
+     * Delete a medical record by first and last name.
+     *
+     * @param firstName First name of the medical record to delete.
+     * @param lastName  Last name of the medical record to delete.
+     * @return true if deletion was successful, false if not found.
+     */
     public boolean deleteMedicalRecord(String firstName, String lastName) {
         log.info("DELETE /medicalRecords - delete requested for {} {}", firstName, lastName);
         try {

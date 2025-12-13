@@ -7,6 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+/* DTO representing a person's basic information.
+ */
 public class PersonDto {
     private String firstName;
     private String lastName;

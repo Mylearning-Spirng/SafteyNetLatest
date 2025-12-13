@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+/* Repository class for reading and writing JSON data from/to files.
+ * It supports reading from a classpath resource and an external file, as well as
+ * reading/writing lists of objects to/from JSON arrays.
+ */
 public class JSONFileReaderRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JSONFileReaderRepository.class);
@@ -51,7 +55,7 @@ public class JSONFileReaderRepository {
         return Optional.empty();
     }
 
-
+    /* Read JsonNode from classpath resource */
     private JsonNode readFromClasspath() {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(classpathResource)) {
             if (in == null) {
@@ -91,7 +95,7 @@ public class JSONFileReaderRepository {
         );
     }
 
-    //    Convert a List<T> to a JSON array and write it to the JSON file
+    //Convert a List<T> to a JSON array and write it to the JSON file
     public <T> void writeList(String arrayName, List<T> items) {
         JsonNode root = readJson();
         ObjectNode objectNode = root.isObject() ? (ObjectNode) root : objectMapper.createObjectNode();

@@ -21,6 +21,7 @@ public class PersonController {
         this.personService = personService;
     }
 
+    /* Retrieve all persons */
     @GetMapping
     public List<Person> getAllPersons() {
         log.info("GET /persons - request received");
@@ -28,11 +29,13 @@ public class PersonController {
         return persons;
     }
 
+    /* Add a new person */
     @PostMapping
     public Person addPerson(@RequestBody Person person) {
         return personService.addPerson(person);
     }
 
+    /* Update an existing person */
     @PutMapping("/{lastName}/{firstName}")
     public ResponseEntity<Boolean> updatePerson(@PathVariable String firstName,
                                                 @PathVariable String lastName,
@@ -42,6 +45,7 @@ public class PersonController {
         return ok ? ResponseEntity.ok(true) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
     }
 
+    /* Delete a person by first and last name */
     @DeleteMapping("/{lastName}/{firstName}")
     public ResponseEntity<Boolean> deletePerson(@PathVariable String firstName,
                                                 @PathVariable String lastName) {

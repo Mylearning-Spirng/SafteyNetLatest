@@ -30,8 +30,8 @@ public class FirstResponderService {
         this.medicalRecordRepository = medicalRecordRepository;
         log.info("FirstResponderService initialized");
     }
-    //Helpers Class
 
+    /* ================= Helper methods ================= */
     private MedicalRecord findMedicalRecord(String firstName, String lastName) {
         log.debug("Searching medical record for {} {}", firstName, lastName);
         for (MedicalRecord mr : medicalRecordRepository.findAll()) {
@@ -56,15 +56,19 @@ public class FirstResponderService {
         return age;
     }
 
-    /* ================= List of people covered by the corresponding fire station ================= */
-
+    /**   Returns a FirstResponderDto containing a list of persons covered by the specified fire station number,
+     * along with counts of adults and children.
+     *
+     * @param stationNumber The fire station number.
+     * @return FirstResponderDto with persons covered, adult count, and child count.
+     */
     public FirstResponderDto getPersonsByStation(int stationNumber) {
         log.info("getPersonsByStation called for station {}", stationNumber);
         List<PersonDto> personsCovered = new ArrayList<>();
         int adults = 0;
         int children = 0;
 
-        // find all addresses served by this station (compare as strings to avoid type mismatch)
+        // find all addresses served by this station
         List<String> addresses = new ArrayList<>();
         for (FireStation fs : fireStationRepository.findAll()) {
             if (fs != null && fs.getAddress() != null && stationNumber == fs.getStation()) {
@@ -101,12 +105,18 @@ public class FirstResponderService {
 
     /* ================= List of children under 18 by address and other household in that address ================= */
 
+    /** Returns a list of ChildResidentDto for children (age <= 18) living at the specified address,
+     * along with other household members.
+     *
+     * @param address The address to search for children.
+     * @return List of ChildResidentDto for children at the address.
+     */
     public List<ChildResidentDto> getChildrenByAddress(String address) {
         log.info("getChildrenByAddress called for address '{}'", address);
         List<Person> peopleAtAddress = new ArrayList<>();
         List<ChildResidentDto> children = new ArrayList<>();
 
-        // collect all people living at this address
+        // All people living at this address
         for (Person p : personRepository.findAll()) {
             if (p.getAddress() != null && address.equalsIgnoreCase(p.getAddress())) {
                 peopleAtAddress.add(p);
@@ -156,7 +166,11 @@ public class FirstResponderService {
     }
 
     /* ================= List of phone numbers by station number ================= */
-
+    /**   Returns a list of phone numbers for all persons covered by the specified fire station number.
+     *
+     * @param stationNumber The fire station number.
+     * @return List of phone numbers for persons covered by the station.
+     */
     public List<String> getPhoneAlert(int stationNumber) {
         log.info("getPhoneAlert called for station {}", stationNumber);
         List<String> addresses = new ArrayList<>();
@@ -179,7 +193,12 @@ public class FirstResponderService {
     }
 
     /* ================= Fire info by address ================= */
-
+    /**   Returns a list of ResidentDto for all residents at the specified address,
+     * including their medical information.
+     *
+     * @param address The address to search for residents.
+     * @return List of ResidentDto for residents at the address.
+     */
     public List<ResidentDto> getFireInfo(String address) {
         log.info("getFireInfo called for address '{}'", address);
         List<ResidentDto> residents = new ArrayList<>();
@@ -206,7 +225,11 @@ public class FirstResponderService {
     }
 
     /* ================= /community email by city ================= */
-
+    /**   Returns a list of email addresses for all persons living in the specified city.
+     *
+     * @param city The city to search for email addresses.
+     * @return List of email addresses for residents of the city.
+     */
     public List<String> getCommunityEmail(String city) {
         log.info("getCommunityEmail called for city '{}'", city);
         List<String> emails = new ArrayList<>();

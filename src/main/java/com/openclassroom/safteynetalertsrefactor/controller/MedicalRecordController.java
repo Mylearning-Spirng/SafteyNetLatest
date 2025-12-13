@@ -16,16 +16,19 @@ public class MedicalRecordController {
         this.medicalRecordsService = medicalRecordsService;
     }
 
+    /* Retrieve all medical records */
     @GetMapping
     public List<MedicalRecord> getAllMedicalRecords() {
         return medicalRecordsService.getAllMedicalRecords();
     }
 
+    /* Add a new medical record */
     @PostMapping
     public MedicalRecord addMedicalRecords(@RequestBody MedicalRecord medicalRecord) {
         return medicalRecordsService.addMedicalRecords(medicalRecord);
     }
 
+    /* Update an existing medical record */
     @PutMapping("/{lastName}/{firstName}")
     public ResponseEntity<Boolean> updateMedicalRecord(@PathVariable String firstName,
                                                        @PathVariable String lastName,
@@ -35,6 +38,7 @@ public class MedicalRecordController {
                 ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
+    /* Delete a medical record by first and last name */
     @DeleteMapping("/{lastName}/{firstName}")
     public ResponseEntity<Boolean> deleteMedicalRecord(@PathVariable String firstName,
                                                        @PathVariable String lastName) {

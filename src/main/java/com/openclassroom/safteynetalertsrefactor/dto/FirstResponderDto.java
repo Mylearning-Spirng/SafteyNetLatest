@@ -8,6 +8,10 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+
+/* DTO representing first responders information including persons,
+   number of adults and number of children.
+*/
 public class FirstResponderDto {
 
     private List<PersonDto> persons;

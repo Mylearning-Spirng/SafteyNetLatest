@@ -1,15 +1,13 @@
-// src/test/java/com/openclassroom/safteynetalertsrefactor/SafteynetalertsrefactorApplicationUnitTest.java
 package com.openclassroom.safteynetalertsrefactor;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import org.springframework.boot.test.context.SpringBootTest;
 
-class SafteynetalertsrefactorApplicationUnitTest {
+@SpringBootTest
+class SafteynetalertsrefactorApplicationTests {
 
     @Test
-    void mainStartsWithoutThrowing() {
-        String[] args = {"--spring.main.web-application-type=none"};
-        assertDoesNotThrow(() -> SafteynetalertsrefactorApplication.main(args));
+    void contextLoads() {
     }
 
 }

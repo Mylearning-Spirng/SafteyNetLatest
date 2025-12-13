@@ -7,6 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+
+/* DTO representing a child resident along with other household members.
+ */
 public class ChildResidentDto {
 
     private String firstName;
