@@ -10,8 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.times;
@@ -90,4 +92,31 @@ public class FirstResponderControllerTest {
         assertSame(emails, result);
         verify(service, times(1)).getCommunityEmail(city);
     }
+
+    @Test
+    void getPersonInfoByLastName_returnsList_and_callsService() {
+        String lastName = "Doe";
+        List<ResidentDto> residents = List.of(Mockito.mock(ResidentDto.class));
+
+        Mockito.when(service.getResidentsByLastName(lastName)).thenReturn(residents);
+
+        List<ResidentDto> result = controller.getPersonInfoByLastName(lastName);
+
+        assertSame(residents, result);
+        verify(service, times(1)).getResidentsByLastName(lastName);
+    }
+
+    @Test
+    void getFloodInfo_returnsResponse_and_callsService() {
+        List<String> stations = List.of("1", "2");
+        List<Object> floodData = List.of(Map.of("station", "1", "residents", List.of()));
+
+        Mockito.when(service.getFloodInfo(stations)).thenReturn(floodData);
+
+        ResponseEntity<List<Object>> response = controller.getFloodInfo(stations);
+
+        assertSame(floodData, response.getBody());
+        verify(service, times(1)).getFloodInfo(stations);
+    }
+
 }

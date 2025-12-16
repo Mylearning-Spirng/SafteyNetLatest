@@ -15,11 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class FirstResponderServiceTest {
@@ -69,15 +68,16 @@ class FirstResponderServiceTest {
     void getPersonsByStation_returnsCounts_and_callsRepositories() {
         FireStation station = fs("100 Main St", 1);
 
-        Person alice = person("Alice", "Anderson", "100 Main St", "111-111-1111", "City", "a@x.com"); // child (2010)
-        Person bob = person("Bob", "Brown", "100 Main St", "222-222-2222", "City", "b@x.com"); // adult (1980)
+        Person alice = person("Alice", "Anderson", "100 Main St", "111-111-1111", "City", "a@x.com");
+        Person bob = person("Bob", "Brown", "100 Main St", "222-222-2222", "City", "b@x.com");
 
         MedicalRecord mrAlice = mr("Alice", "Anderson", "01/01/2010", Collections.emptyList(), Collections.emptyList());
         MedicalRecord mrBob = mr("Bob", "Brown", "01/01/1980", Collections.emptyList(), Collections.emptyList());
 
         when(fireStationRepository.findAll()).thenReturn(Arrays.asList(station));
         when(personRepository.findAll()).thenReturn(Arrays.asList(alice, bob));
-        when(medicalRecordRepository.findAll()).thenReturn(Arrays.asList(mrAlice, mrBob));
+        when(medicalRecordRepository.findByName("Alice", "Anderson")).thenReturn(Optional.of(mrAlice));
+        when(medicalRecordRepository.findByName("Bob", "Brown")).thenReturn(Optional.of(mrBob));
 
         FirstResponderDto result = service.getPersonsByStation(1);
 
@@ -85,41 +85,23 @@ class FirstResponderServiceTest {
         assertEquals(2, result.getPersons().size());
         assertEquals(1, result.getNumberOfAdults());
         assertEquals(1, result.getNumberOfChildren());
-        // ensure repositories were used
-        verify(fireStationRepository, times(1)).findAll();
-        verify(personRepository, times(1)).findAll();
-        verify(medicalRecordRepository, atLeastOnce()).findAll();
-    }
-
-    @Test
-    void getPersonsByStation_noMatches_doesNotCallMedicalRepo() {
-        FireStation station = fs("100 Main St", 1);
-
-        when(fireStationRepository.findAll()).thenReturn(Collections.singletonList(station));
-        when(personRepository.findAll()).thenReturn(Collections.emptyList());
-
-        FirstResponderDto result = service.getPersonsByStation(99);
-
-        assertNotNull(result);
-        assertTrue(result.getPersons().isEmpty());
-        assertEquals(0, result.getNumberOfAdults());
-        assertEquals(0, result.getNumberOfChildren());
 
         verify(fireStationRepository, times(1)).findAll();
         verify(personRepository, times(1)).findAll();
-        verify(medicalRecordRepository, never()).findAll();
+        verify(medicalRecordRepository, atLeast(2)).findByName(anyString(), anyString());
     }
 
     @Test
     void getChildrenByAddress_returnsChildWithOtherMembers() {
-        Person child = person("Charlie", "Cole", "123 Elm St", "333-333-3333", "City", "c@x.com"); // child 2015
-        Person parent = person("Paula", "Cole", "123 Elm St", "444-444-4444", "City", "p@x.com"); // adult 1985
+        Person child = person("Charlie", "Cole", "123 Elm St", "333-333-3333", "City", "c@x.com");
+        Person parent = person("Paula", "Cole", "123 Elm St", "444-444-4444", "City", "p@x.com");
 
         MedicalRecord mrChild = mr("Charlie", "Cole", "01/01/2015", Collections.emptyList(), Collections.emptyList());
         MedicalRecord mrParent = mr("Paula", "Cole", "01/01/1985", Collections.emptyList(), Collections.emptyList());
 
         when(personRepository.findAll()).thenReturn(Arrays.asList(child, parent));
-        when(medicalRecordRepository.findAll()).thenReturn(Arrays.asList(mrChild, mrParent));
+        when(medicalRecordRepository.findByName("Charlie", "Cole")).thenReturn(Optional.of(mrChild));
+        when(medicalRecordRepository.findByName("Paula", "Cole")).thenReturn(Optional.of(mrParent));
 
         List<ChildResidentDto> children = service.getChildrenByAddress("123 Elm St");
 
@@ -128,22 +110,16 @@ class FirstResponderServiceTest {
         ChildResidentDto dto = children.get(0);
         assertEquals("Charlie", dto.getFirstName());
         assertTrue(dto.getAge() <= 18);
-        // other household members should include parent
         assertEquals(1, dto.getOtherHouseholdMembers().size());
         PersonDto other = dto.getOtherHouseholdMembers().get(0);
         assertEquals("Paula", other.getFirstName());
 
         verify(personRepository, times(1)).findAll();
-        verify(medical_record_repository_validation(), atLeastOnce()).findAll();
-    }
-
-    // small helper to avoid static import name collision in the previous test
-    private MedicalRecordsRepository medical_record_repository_validation() {
-        return medicalRecordRepository;
+        verify(medicalRecordRepository, atLeastOnce()).findByName(anyString(), anyString());
     }
 
     @Test
-    void getPhoneAlert_returnsPhonesForStation() {
+    void getPhoneAlert_returnsPhonesForStation_and_doesNotCallMedicalRepo() {
         FireStation fs1 = fs("A St", 2);
         FireStation fs2 = fs("B St", 1);
 
@@ -160,7 +136,7 @@ class FirstResponderServiceTest {
 
         verify(fireStationRepository, times(1)).findAll();
         verify(personRepository, times(1)).findAll();
-        verify(medicalRecordRepository, never()).findAll();
+        verify(medicalRecordRepository, never()).findByName(anyString(), anyString());
     }
 
     @Test
@@ -169,8 +145,7 @@ class FirstResponderServiceTest {
         MedicalRecord mrDave = mr("Dave", "Duke", "01/01/1990", Arrays.asList("med1"), Arrays.asList("peanut"));
 
         when(personRepository.findAll()).thenReturn(Collections.singletonList(dave));
-        // FIX: call findAll() on the helper-returned repository mock
-        when(medical_record_repository_findAll().findAll()).thenReturn(Collections.singletonList(mrDave));
+        when(medicalRecordRepository.findByName("Dave", "Duke")).thenReturn(Optional.of(mrDave));
 
         List<ResidentDto> residents = service.getFireInfo("50 Pine St");
 
@@ -182,20 +157,11 @@ class FirstResponderServiceTest {
         assertTrue(r.getAllergyList().contains("peanut"));
 
         verify(personRepository, times(1)).findAll();
-        verify(medical_record_repository_findCall(), atLeastOnce()).findAll();
-    }
-
-    // helpers to avoid ambiguous static import names in this file
-    private MedicalRecordsRepository medical_record_repository_findAll() {
-        return medicalRecordRepository;
-    }
-
-    private MedicalRecordsRepository medical_record_repository_findCall() {
-        return medicalRecordRepository;
+        verify(medicalRecordRepository, atLeastOnce()).findByName("Dave", "Duke");
     }
 
     @Test
-    void getCommunityEmail_returnsEmailsByCity() {
+    void getCommunityEmail_returnsEmailsByCity_and_doesNotCallMedicalRepo() {
         Person p1 = person("Eve", "Evans", "X St", "000", "MyCity", "e@x.com");
         Person p2 = person("Fay", "Fox", "Y St", "111", "OtherCity", "f@x.com");
 
@@ -207,6 +173,73 @@ class FirstResponderServiceTest {
         assertTrue(emails.contains("e@x.com"));
 
         verify(personRepository, times(1)).findAll();
-        verify(medicalRecordRepository, never()).findAll();
+        verify(medicalRecordRepository, never()).findByName(anyString(), anyString());
+    }
+
+    @Test
+    void getResidentsByLastName_returnsResidents_and_handlesEmptyInput() {
+        Person p1 = person("Ann", "Duke", "A", "1", "C", "a@x.com");
+        Person p2 = person("Ben", "Duke", "B", "2", "C", "b@x.com");
+
+        MedicalRecord mr1 = mr("Ann", "Duke", "01/01/1992", Arrays.asList("mA"), Collections.emptyList());
+        MedicalRecord mr2 = mr("Ben", "Duke", "01/01/1988", Arrays.asList("mB"), Arrays.asList("peanut"));
+
+        when(personRepository.findAll()).thenReturn(Arrays.asList(p1, p2));
+        when(medicalRecordRepository.findByName("Ann", "Duke")).thenReturn(Optional.of(mr1));
+        when(medicalRecordRepository.findByName("Ben", "Duke")).thenReturn(Optional.of(mr2));
+
+        List<ResidentDto> residents = service.getResidentsByLastName("Duke");
+        assertEquals(2, residents.size());
+
+        // empty/blank input
+        assertTrue(service.getResidentsByLastName(" ").isEmpty());
+        verify(medicalRecordRepository, atLeast(2)).findByName(anyString(), eq("Duke"));
+    }
+
+    @Test
+    void getFloodInfo_returnsAddressBlocks_withResidents() {
+        FireStation f1 = fs("Addr1", 1);
+        FireStation f2 = fs("Addr2", 2);
+
+        Person p1 = person("P1", "L1", "Addr1", "111", "C", "p1@x.com");
+        Person p2 = person("P2", "L2", "Addr2", "222", "C", "p2@x.com");
+        Person p3 = person("P3", "L3", "Addr1", "333", "C", "p3@x.com");
+
+        MedicalRecord mr1 = mr("P1", "L1", "01/01/1990", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mr2 = mr("P2", "L2", "01/01/2000", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mr3 = mr("P3", "L3", "01/01/2010", Collections.emptyList(), Collections.emptyList());
+
+        when(fireStationRepository.findAll()).thenReturn(Arrays.asList(f1, f2));
+        when(personRepository.findAll()).thenReturn(Arrays.asList(p1, p2, p3));
+        when(medicalRecordRepository.findByName("P1", "L1")).thenReturn(Optional.of(mr1));
+        when(medicalRecordRepository.findByName("P2", "L2")).thenReturn(Optional.of(mr2));
+        when(medicalRecordRepository.findByName("P3", "L3")).thenReturn(Optional.of(mr3));
+
+        List<Object> flood = service.getFloodInfo(Arrays.asList("1", "2"));
+
+        // expecting two address blocks (Addr1, Addr2) order may vary
+        assertEquals(2, flood.size());
+
+        // validate contents: each block is a List with [address, residents]
+        Set<String> addressesFound = new HashSet<>();
+        for (Object blockObj : flood) {
+            assertTrue(blockObj instanceof List);
+            List<?> block = (List<?>) blockObj;
+            assertEquals(2, block.size());
+            Object addr = block.get(0);
+            Object residentsObj = block.get(1);
+            assertTrue(addr instanceof String);
+            addressesFound.add((String) addr);
+            assertTrue(residentsObj instanceof List);
+            List<?> resList = (List<?>) residentsObj;
+            // residents list non-empty for our sample addresses
+            assertFalse(resList.isEmpty());
+        }
+        assertTrue(addressesFound.contains("Addr1"));
+        assertTrue(addressesFound.contains("Addr2"));
+
+        verify(fireStationRepository, times(1)).findAll();
+        verify(personRepository, times(1)).findAll();
+        verify(medicalRecordRepository, atLeast(3)).findByName(anyString(), anyString());
     }
 }

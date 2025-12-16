@@ -4,6 +4,7 @@ import com.openclassroom.safteynetalertsrefactor.dto.ChildResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,4 +50,15 @@ public class FirstResponderController {
     public List<String> getCommunityEmail(@RequestParam String city) {
         return service.getCommunityEmail(city);
     }
+
+    @GetMapping("/personInfolastName={lastName}")
+ public List<ResidentDto> getPersonInfoByLastName(@PathVariable String lastName) {
+     return service.getResidentsByLastName(lastName);
+    }
+
+    @GetMapping("/flood/stations")
+    public ResponseEntity<List<Object>> getFloodInfo(@RequestParam List<String> stations) {
+        return ResponseEntity.ok(service.getFloodInfo(stations));
+    }
+
 }

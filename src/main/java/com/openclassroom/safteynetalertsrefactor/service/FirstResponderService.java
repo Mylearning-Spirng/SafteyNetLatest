@@ -32,21 +32,9 @@ public class FirstResponderService {
     }
 
     /* ================= Helper methods ================= */
-    private MedicalRecord findMedicalRecord(String firstName, String lastName) {
-        log.debug("Searching medical record for {} {}", firstName, lastName);
-        for (MedicalRecord mr : medicalRecordRepository.findAll()) {
-            if (mr.getFirstName().equalsIgnoreCase(firstName)
-                    && mr.getLastName().equalsIgnoreCase(lastName)) {
-                log.debug("Found medical record for {} {}", firstName, lastName);
-                return mr;
-            }
-        }
-        log.debug("No medical record found for {} {}", firstName, lastName);
-        return null;
-    }
 
     private int calculateAgeOf(String firstName, String lastName) {
-        MedicalRecord mr = findMedicalRecord(firstName, lastName);
+        MedicalRecord mr = medicalRecordRepository.findByName(firstName, lastName).orElse(null);
         if (mr == null) {
             log.debug("Age calculation: no medical record for {} {}", firstName, lastName);
             return 0;
@@ -205,7 +193,7 @@ public class FirstResponderService {
         String targetAddress = address.trim().toLowerCase();
         for (Person p : personRepository.findAll()) {
             if (p.getAddress() != null && targetAddress.equalsIgnoreCase(p.getAddress().trim().toLowerCase())) {
-                MedicalRecord mr = findMedicalRecord(p.getFirstName(), p.getLastName());
+                MedicalRecord mr = medicalRecordRepository.findByName(p.getFirstName(), p.getLastName()).orElse(null);
                 int age = calculateAgeOf(p.getFirstName(), p.getLastName());
                 List<String> meds = mr != null ? mr.getMedications() : List.of();
                 List<String> allergies = mr != null ? mr.getAllergies() : List.of();
@@ -242,4 +230,99 @@ public class FirstResponderService {
         return emails;
     }
 
+//    /* ================= /personInfo?lastName=Boyd ================= */
+
+    public List<ResidentDto> getResidentsByLastName(String lastName) {
+        if (lastName == null || lastName.trim().isEmpty()) {
+            return List.of();
+        }
+
+        String target = lastName.trim();
+        List<ResidentDto> result = new ArrayList<>();
+
+        for (Person p : personRepository.findAll()) {
+            if (p.getLastName() != null && p.getLastName().equalsIgnoreCase(target)) {
+                Optional<MedicalRecord> mrOpt = medicalRecordRepository.findByName(p.getFirstName(), p.getLastName());
+                MedicalRecord mr = mrOpt.orElse(null);
+
+                int age = calculateAgeOf(p.getFirstName(), p.getLastName());
+                List<String> meds = mr != null && mr.getMedications() != null ? mr.getMedications() : List.of();
+                List<String> allergies = mr != null && mr.getAllergies() != null ? mr.getAllergies() : List.of();
+
+                ResidentDto dto = new ResidentDto(
+                        p.getFirstName(),
+                        p.getLastName(),
+                        p.getPhone(),
+                        age,
+                        meds,
+                        allergies
+                );
+                result.add(dto);
+            }
+        }
+
+        return result;
+    }
+
+    /* ================= /flood/stations?stations=1,2 ================= */
+    // Simple version: map address -> list of FirstResponderDto
+
+    // java
+    public List<Object> getFloodInfo(List<String> stations) {
+
+        List<Object> result = new ArrayList<>();
+
+        // Collect addresses for given stations
+        List<String> addresses = new ArrayList<>();
+        for (FireStation fs : fireStationRepository.findAll()) {
+            if (fs != null
+                    && fs.getAddress() != null
+                    && stations.contains(String.valueOf(fs.getStation()))) {
+
+                if (!addresses.contains(fs.getAddress())) {
+                    addresses.add(fs.getAddress());
+                }
+            }
+        }
+
+        // Cache all people once to avoid multiple repository calls
+        List<Person> allPeople = personRepository.findAll();
+
+        // For each address → collect residents
+        for (String address : addresses) {
+
+            List<ResidentDto> residents = new ArrayList<>();
+
+            for (Person p : allPeople) {
+                if (p == null || !address.equals(p.getAddress())) {
+                    continue;
+                }
+
+                MedicalRecord mr = medicalRecordRepository
+                        .findByName(p.getFirstName(), p.getLastName())
+                        .orElse(null);
+
+                int age = mr != null ? calculateAgeOf(p.getFirstName(), p.getLastName()) : 0;
+                List<String> meds = mr != null ? mr.getMedications() : List.of();
+                List<String> allergies = mr != null ? mr.getAllergies() : List.of();
+
+                residents.add(new ResidentDto(
+                        p.getFirstName(),
+                        p.getLastName(),
+                        p.getPhone(),
+                        age,
+                        meds,
+                        allergies
+                ));
+            }
+
+            List<Object> addressBlock = new ArrayList<>();
+            addressBlock.add(address);
+            addressBlock.add(residents);
+
+            result.add(addressBlock);
+        }
+
+        return result;
+    }
 }
