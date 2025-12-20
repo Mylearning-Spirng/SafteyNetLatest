@@ -46,7 +46,7 @@ class FirstResponderServiceTest {
         return p;
     }
 
-    private static MedicalRecord mr(String first, String last, String birthdate, List<String> meds, List<String> allergies) {
+    private static MedicalRecord medicalrecord(String first, String last, String birthdate, List<String> meds, List<String> allergies) {
         MedicalRecord m = new MedicalRecord();
         m.setFirstName(first);
         m.setLastName(last);
@@ -71,8 +71,8 @@ class FirstResponderServiceTest {
         Person alice = person("Alice", "Anderson", "100 Main St", "111-111-1111", "City", "a@x.com");
         Person bob = person("Bob", "Brown", "100 Main St", "222-222-2222", "City", "b@x.com");
 
-        MedicalRecord mrAlice = mr("Alice", "Anderson", "01/01/2010", Collections.emptyList(), Collections.emptyList());
-        MedicalRecord mrBob = mr("Bob", "Brown", "01/01/1980", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mrAlice = medicalrecord("Alice", "Anderson", "01/01/2010", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mrBob = medicalrecord("Bob", "Brown", "01/01/1980", Collections.emptyList(), Collections.emptyList());
 
         when(fireStationRepository.findAll()).thenReturn(Arrays.asList(station));
         when(personRepository.findAll()).thenReturn(Arrays.asList(alice, bob));
@@ -96,8 +96,8 @@ class FirstResponderServiceTest {
         Person child = person("Charlie", "Cole", "123 Elm St", "333-333-3333", "City", "c@x.com");
         Person parent = person("Paula", "Cole", "123 Elm St", "444-444-4444", "City", "p@x.com");
 
-        MedicalRecord mrChild = mr("Charlie", "Cole", "01/01/2015", Collections.emptyList(), Collections.emptyList());
-        MedicalRecord mrParent = mr("Paula", "Cole", "01/01/1985", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mrChild = medicalrecord("Charlie", "Cole", "01/01/2015", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mrParent = medicalrecord("Paula", "Cole", "01/01/1985", Collections.emptyList(), Collections.emptyList());
 
         when(personRepository.findAll()).thenReturn(Arrays.asList(child, parent));
         when(medicalRecordRepository.findByName("Charlie", "Cole")).thenReturn(Optional.of(mrChild));
@@ -142,7 +142,7 @@ class FirstResponderServiceTest {
     @Test
     void getFireInfo_returnsResidentWithMedsAndAllergies() {
         Person dave = person("Dave", "Duke", "50 Pine St", "777-7777", "Town", "d@x.com");
-        MedicalRecord mrDave = mr("Dave", "Duke", "01/01/1990", Arrays.asList("med1"), Arrays.asList("peanut"));
+        MedicalRecord mrDave = medicalrecord("Dave", "Duke", "01/01/1990", Arrays.asList("med1"), Arrays.asList("peanut"));
 
         when(personRepository.findAll()).thenReturn(Collections.singletonList(dave));
         when(medicalRecordRepository.findByName("Dave", "Duke")).thenReturn(Optional.of(mrDave));
@@ -181,8 +181,8 @@ class FirstResponderServiceTest {
         Person p1 = person("Ann", "Duke", "A", "1", "C", "a@x.com");
         Person p2 = person("Ben", "Duke", "B", "2", "C", "b@x.com");
 
-        MedicalRecord mr1 = mr("Ann", "Duke", "01/01/1992", Arrays.asList("mA"), Collections.emptyList());
-        MedicalRecord mr2 = mr("Ben", "Duke", "01/01/1988", Arrays.asList("mB"), Arrays.asList("peanut"));
+        MedicalRecord mr1 = medicalrecord("Ann", "Duke", "01/01/1992", Arrays.asList("mA"), Collections.emptyList());
+        MedicalRecord mr2 = medicalrecord("Ben", "Duke", "01/01/1988", Arrays.asList("mB"), Arrays.asList("peanut"));
 
         when(personRepository.findAll()).thenReturn(Arrays.asList(p1, p2));
         when(medicalRecordRepository.findByName("Ann", "Duke")).thenReturn(Optional.of(mr1));
@@ -205,9 +205,9 @@ class FirstResponderServiceTest {
         Person p2 = person("P2", "L2", "Addr2", "222", "C", "p2@x.com");
         Person p3 = person("P3", "L3", "Addr1", "333", "C", "p3@x.com");
 
-        MedicalRecord mr1 = mr("P1", "L1", "01/01/1990", Collections.emptyList(), Collections.emptyList());
-        MedicalRecord mr2 = mr("P2", "L2", "01/01/2000", Collections.emptyList(), Collections.emptyList());
-        MedicalRecord mr3 = mr("P3", "L3", "01/01/2010", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mr1 = medicalrecord("P1", "L1", "01/01/1990", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mr2 = medicalrecord("P2", "L2", "01/01/2000", Collections.emptyList(), Collections.emptyList());
+        MedicalRecord mr3 = medicalrecord("P3", "L3", "01/01/2010", Collections.emptyList(), Collections.emptyList());
 
         when(fireStationRepository.findAll()).thenReturn(Arrays.asList(f1, f2));
         when(personRepository.findAll()).thenReturn(Arrays.asList(p1, p2, p3));

@@ -24,13 +24,13 @@ class MedicalRecordsRepositoryTest {
     private MedicalRecordsRepository medicalRecordsRepository;
 
     private MedicalRecord sampleRecord(String firstName, String lastName) {
-        MedicalRecord mr = new MedicalRecord();
-        mr.setFirstName(firstName);
-        mr.setLastName(lastName);
-        mr.setBirthdate("01/01/2000");
-        mr.setMedications(List.of("med1", "med2"));
-        mr.setAllergies(List.of("allergy1"));
-        return mr;
+        MedicalRecord medicalrecord = new MedicalRecord();
+        medicalrecord.setFirstName(firstName);
+        medicalrecord.setLastName(lastName);
+        medicalrecord.setBirthdate("01/01/2000");
+        medicalrecord.setMedications(List.of("med1", "med2"));
+        medicalrecord.setAllergies(List.of("allergy1"));
+        return medicalrecord;
     }
 
     @BeforeEach
@@ -64,8 +64,8 @@ class MedicalRecordsRepositoryTest {
         medicalRecordsRepository = new MedicalRecordsRepository(jsonFileReaderRepository);
         medicalRecordsRepository.init();
 
-        MedicalRecord mr = sampleRecord("John", "Doe");
-        medicalRecordsRepository.add(mr);
+        MedicalRecord medicalrecord = sampleRecord("John", "Doe");
+        medicalRecordsRepository.add(medicalrecord);
 
         List<MedicalRecord> all = medicalRecordsRepository.findAll();
         assertEquals(1, all.size());

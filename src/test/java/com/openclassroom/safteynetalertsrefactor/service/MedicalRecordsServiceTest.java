@@ -17,13 +17,13 @@ class MedicalRecordsServiceTest {
     private MedicalRecordsService medicalRecordsService;
 
     private MedicalRecord sample() {
-        MedicalRecord mr = new MedicalRecord();
-        mr.setFirstName("John");
-        mr.setLastName("Doe");
-        mr.setBirthdate("01/01/1990");
-        mr.setMedications(List.of("med1"));
-        mr.setAllergies(List.of("all1"));
-        return mr;
+        MedicalRecord medicalrecord = new MedicalRecord();
+        medicalrecord.setFirstName("John");
+        medicalrecord.setLastName("Doe");
+        medicalrecord.setBirthdate("01/01/1990");
+        medicalrecord.setMedications(List.of("med1"));
+        medicalrecord.setAllergies(List.of("all1"));
+        return medicalrecord;
     }
 
     @BeforeEach
@@ -34,8 +34,8 @@ class MedicalRecordsServiceTest {
 
     @Test
     void getAllMedicalRecords_shouldDelegateToRepository() {
-        MedicalRecord mr = sample();
-        when(medicalRecordsRepository.findAll()).thenReturn(List.of(mr));
+        MedicalRecord medicalrecord = sample();
+        when(medicalRecordsRepository.findAll()).thenReturn(List.of(medicalrecord));
 
         List<MedicalRecord> result = medicalRecordsService.getAllMedicalRecords();
 
@@ -66,54 +66,54 @@ class MedicalRecordsServiceTest {
 
     @Test
     void addMedicalRecords_shouldCallRepositoryAndReturnObject() {
-        MedicalRecord mr = sample();
+        MedicalRecord medicalrecord = sample();
 
-        MedicalRecord returned = medicalRecordsService.addMedicalRecords(mr);
+        MedicalRecord returned = medicalRecordsService.addMedicalRecords(medicalrecord);
 
-        assertSame(mr, returned);
-        verify(medicalRecordsRepository, times(1)).add(mr);
+        assertSame(medicalrecord, returned);
+        verify(medicalRecordsRepository, times(1)).add(medicalrecord);
     }
 
     @Test
     void addMedicalRecords_shouldPropagateExceptionFromRepository() {
-        MedicalRecord mr = sample();
-        doThrow(new RuntimeException("add-fail")).when(medicalRecordsRepository).add(mr);
+        MedicalRecord medicalrecord = sample();
+        doThrow(new RuntimeException("add-fail")).when(medicalRecordsRepository).add(medicalrecord);
 
-        Exception ex = assertThrows(RuntimeException.class, () -> medicalRecordsService.addMedicalRecords(mr));
+        Exception ex = assertThrows(RuntimeException.class, () -> medicalRecordsService.addMedicalRecords(medicalrecord));
         assertEquals("add-fail", ex.getMessage());
-        verify(medicalRecordsRepository, times(1)).add(mr);
+        verify(medicalRecordsRepository, times(1)).add(medicalrecord);
     }
 
     @Test
     void updateMedicalRecord_shouldReturnTrueIfUpdated() {
-        MedicalRecord mr = sample();
-        when(medicalRecordsRepository.updateMedicalRecord("John", "Doe", mr)).thenReturn(true);
+        MedicalRecord medicalrecord = sample();
+        when(medicalRecordsRepository.updateMedicalRecord("John", "Doe", medicalrecord)).thenReturn(true);
 
-        boolean result = medicalRecordsService.updateMedicalRecord("John", "Doe", mr);
+        boolean result = medicalRecordsService.updateMedicalRecord("John", "Doe", medicalrecord);
 
         assertTrue(result);
-        verify(medicalRecordsRepository, times(1)).updateMedicalRecord("John", "Doe", mr);
+        verify(medicalRecordsRepository, times(1)).updateMedicalRecord("John", "Doe", medicalrecord);
     }
 
     @Test
     void updateMedicalRecord_shouldReturnFalseIfNotUpdated() {
-        MedicalRecord mr = sample();
-        when(medicalRecordsRepository.updateMedicalRecord("John", "Doe", mr)).thenReturn(false);
+        MedicalRecord medicalrecord = sample();
+        when(medicalRecordsRepository.updateMedicalRecord("John", "Doe", medicalrecord)).thenReturn(false);
 
-        boolean result = medicalRecordsService.updateMedicalRecord("John", "Doe", mr);
+        boolean result = medicalRecordsService.updateMedicalRecord("John", "Doe", medicalrecord);
 
         assertFalse(result);
-        verify(medicalRecordsRepository, times(1)).updateMedicalRecord("John", "Doe", mr);
+        verify(medicalRecordsRepository, times(1)).updateMedicalRecord("John", "Doe", medicalrecord);
     }
 
     @Test
     void updateMedicalRecord_shouldPropagateExceptionFromRepository() {
-        MedicalRecord mr = sample();
-        when(medicalRecordsRepository.updateMedicalRecord("John", "Doe", mr)).thenThrow(new RuntimeException("update-fail"));
+        MedicalRecord medicalrecord = sample();
+        when(medicalRecordsRepository.updateMedicalRecord("John", "Doe", medicalrecord)).thenThrow(new RuntimeException("update-fail"));
 
-        Exception ex = assertThrows(RuntimeException.class, () -> medicalRecordsService.updateMedicalRecord("John", "Doe", mr));
+        Exception ex = assertThrows(RuntimeException.class, () -> medicalRecordsService.updateMedicalRecord("John", "Doe", medicalrecord));
         assertEquals("update-fail", ex.getMessage());
-        verify(medicalRecordsRepository, times(1)).updateMedicalRecord("John", "Doe", mr);
+        verify(medicalRecordsRepository, times(1)).updateMedicalRecord("John", "Doe", medicalrecord);
     }
 
     @Test

@@ -53,10 +53,10 @@ public class MedicalRecordsRepository {
     /* Finds a medical record by first and last name. */
     public Optional<MedicalRecord> findByName(String firstName, String lastName) {
         log.debug("Searching for medical record: {} {}", firstName, lastName);
-        for (MedicalRecord mr : medicalRecords) {
-            if (mr.getFirstName().equals(firstName) && mr.getLastName().equals(lastName)) {
+        for (MedicalRecord medicalrecord : medicalRecords) {
+            if (medicalrecord.getFirstName().equals(firstName) && medicalrecord.getLastName().equals(lastName)) {
                 log.debug("Found medical record for {} {}", firstName, lastName);
-                return Optional.of(mr);
+                return Optional.of(medicalrecord);
             }
         }
         log.debug("No medical record found for {} {}", firstName, lastName);
