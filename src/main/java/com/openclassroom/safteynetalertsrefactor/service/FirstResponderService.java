@@ -230,7 +230,7 @@ public class FirstResponderService {
         return emails;
     }
 
-//    /* ================= /personInfo?lastName=Boyd ================= */
+//    /* ================= /personInfoByLastName================= */
 
     public List<ResidentDto> getResidentsByLastName(String lastName) {
         if (lastName == null || lastName.trim().isEmpty()) {
@@ -264,10 +264,7 @@ public class FirstResponderService {
         return result;
     }
 
-    /* ================= /flood/stations?stations=1,2 ================= */
-    // Simple version: map address -> list of FirstResponderDto
-
-    // java
+    /* ================= /flood stations================= */
     public List<Object> getFloodInfo(List<String> stations) {
 
         List<Object> result = new ArrayList<>();

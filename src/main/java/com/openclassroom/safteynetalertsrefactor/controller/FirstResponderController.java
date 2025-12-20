@@ -51,11 +51,13 @@ public class FirstResponderController {
         return service.getCommunityEmail(city);
     }
 
+    /* Retrieve person information by last name */
     @GetMapping("/personInfolastName={lastName}")
  public List<ResidentDto> getPersonInfoByLastName(@PathVariable String lastName) {
      return service.getResidentsByLastName(lastName);
     }
 
+    /* Retrieve flood information for given station numbers */
     @GetMapping("/flood/stations")
     public ResponseEntity<List<Object>> getFloodInfo(@RequestParam List<String> stations) {
         return ResponseEntity.ok(service.getFloodInfo(stations));
