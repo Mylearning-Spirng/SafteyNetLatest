@@ -238,7 +238,6 @@ public class FirstResponderService {
      */
 //    /* ================= /personInfoByLastName================= */
 
-// src/main/java/com/openclassroom/safteynetalertsrefactor/service/FirstResponderService.java
     public List<ResidentDto> getResidentsByLastName(String lastName) {
         log.info("getResidentsByLastName called with lastName='{}'", lastName);
         if (lastName == null || lastName.trim().isEmpty()) {
@@ -286,17 +285,34 @@ public class FirstResponderService {
         return result;
     }
 
+    /**   Returns a list of HouseholdDto for all households served by the specified fire station numbers,
+     * including resident medical information.
+     *
+     * @param stations The list of fire station numbers.
+     * @return List of HouseholdDto for households served by the stations.
+     */
     /* ================= /flood stations================= */
-    public List<Object> getFloodInfo(List<String> stations) {
+    public List<HouseholdDto> getFloodInfo(List<String> stations) {
         log.info("getFloodInfo called for stations={}", stations);
         if (stations == null || stations.isEmpty()) {
             log.debug("getFloodInfo: stations list is null or empty -> returning empty result");
             return List.of();
         }
 
-        List<Object> result = new ArrayList<>();
+        List<HouseholdDto> result = new ArrayList<>();
+        List<String> addresses = collectAddresses(stations);
 
-        // Collect addresses for given stations
+        // Cache all people once to avoid multiple repository calls
+        List<Person> allPeople = personRepository.findAll();
+        log.debug("getFloodInfo: loaded {} people from repository", allPeople.size());
+
+        collectResidences(addresses, allPeople, result);
+
+        log.info("getFloodInfo returning {} address blocks", result.size());
+        return result;
+    }
+
+    private List<String> collectAddresses(List<String> stations) {
         List<String> addresses = new ArrayList<>();
         for (FireStation fs : fireStationRepository.findAll()) {
             if (fs != null
@@ -309,12 +325,10 @@ public class FirstResponderService {
             }
         }
         log.debug("getFloodInfo: found {} addresses for stations {}", addresses.size(), stations);
+        return addresses;
+    }
 
-        // Cache all people once to avoid multiple repository calls
-        List<Person> allPeople = personRepository.findAll();
-        log.debug("getFloodInfo: loaded {} people from repository", allPeople.size());
-
-        // For each address → collect residents
+    private void collectResidences(List<String> addresses, List<Person> allPeople, List<HouseholdDto> result) {
         for (String address : addresses) {
             log.debug("Processing address '{}'", address);
             List<ResidentDto> residents = new ArrayList<>();
@@ -347,15 +361,8 @@ public class FirstResponderService {
                 log.debug("Added resident {} {} for address '{}'", p.getFirstName(), p.getLastName(), address);
             }
 
-            List<Object> addressBlock = new ArrayList<>();
-            addressBlock.add(address);
-            addressBlock.add(residents);
-
-            result.add(addressBlock);
+            result.add(new HouseholdDto(address, residents));
             log.debug("Address '{}' block added with {} residents", address, residents.size());
         }
-
-        log.info("getFloodInfo returning {} address blocks", result.size());
-        return result;
     }
 }
