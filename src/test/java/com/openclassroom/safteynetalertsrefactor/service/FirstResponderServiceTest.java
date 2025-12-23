@@ -1,10 +1,7 @@
 // java
 package com.openclassroom.safteynetalertsrefactor.service;
 
-import com.openclassroom.safteynetalertsrefactor.dto.ChildResidentDto;
-import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
-import com.openclassroom.safteynetalertsrefactor.dto.PersonDto;
-import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
+import com.openclassroom.safteynetalertsrefactor.dto.*;
 import com.openclassroom.safteynetalertsrefactor.model.FireStation;
 import com.openclassroom.safteynetalertsrefactor.model.MedicalRecord;
 import com.openclassroom.safteynetalertsrefactor.model.Person;
@@ -196,6 +193,7 @@ class FirstResponderServiceTest {
         verify(medicalRecordRepository, atLeast(2)).findByName(anyString(), eq("Duke"));
     }
 
+    // java
     @Test
     void getFloodInfo_returnsAddressBlocks_withResidents() {
         FireStation f1 = fs("Addr1", 1);
@@ -215,23 +213,20 @@ class FirstResponderServiceTest {
         when(medicalRecordRepository.findByName("P2", "L2")).thenReturn(Optional.of(mr2));
         when(medicalRecordRepository.findByName("P3", "L3")).thenReturn(Optional.of(mr3));
 
-        List<Object> flood = service.getFloodInfo(Arrays.asList("1", "2"));
+        List<HouseholdDto> flood = service.getFloodInfo(Arrays.asList("1", "2"));
 
         // expecting two address blocks (Addr1, Addr2) order may vary
         assertEquals(2, flood.size());
 
-        // validate contents: each block is a List with [address, residents]
         Set<String> addressesFound = new HashSet<>();
-        for (Object blockObj : flood) {
-            assertTrue(blockObj instanceof List);
-            List<?> block = (List<?>) blockObj;
-            assertEquals(2, block.size());
-            Object addr = block.get(0);
-            Object residentsObj = block.get(1);
-            assertTrue(addr instanceof String);
-            addressesFound.add((String) addr);
-            assertTrue(residentsObj instanceof List);
-            List<?> resList = (List<?>) residentsObj;
+        for (HouseholdDto block : flood) {
+            assertNotNull(block);
+            String addr = block.getAddress();
+            assertNotNull(addr);
+            addressesFound.add(addr);
+
+            List<ResidentDto> resList = block.getResidents();
+            assertNotNull(resList);
             // residents list non-empty for our sample addresses
             assertFalse(resList.isEmpty());
         }

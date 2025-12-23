@@ -2,6 +2,7 @@ package com.openclassroom.safteynetalertsrefactor.controller;
 
 import com.openclassroom.safteynetalertsrefactor.dto.ChildResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
+import com.openclassroom.safteynetalertsrefactor.dto.HouseholdDto;
 import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
 import org.junit.jupiter.api.Test;
@@ -109,11 +110,12 @@ public class FirstResponderControllerTest {
     @Test
     void getFloodInfo_returnsResponse_and_callsService() {
         List<String> stations = List.of("1", "2");
-        List<Object> floodData = List.of(Map.of("station", "1", "residents", List.of()));
+        HouseholdDto dto = Mockito.mock(HouseholdDto.class);
+        List<HouseholdDto> floodData = List.of(dto);
 
         Mockito.when(service.getFloodInfo(stations)).thenReturn(floodData);
 
-        ResponseEntity<List<Object>> response = controller.getFloodInfo(stations);
+        ResponseEntity<List<HouseholdDto>> response = controller.getFloodInfo(stations);
 
         assertSame(floodData, response.getBody());
         verify(service, times(1)).getFloodInfo(stations);

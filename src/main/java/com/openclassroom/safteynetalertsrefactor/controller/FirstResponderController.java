@@ -1,6 +1,7 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
 
 import com.openclassroom.safteynetalertsrefactor.dto.ChildResidentDto;
+import com.openclassroom.safteynetalertsrefactor.dto.HouseholdDto;
 import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
@@ -59,8 +60,9 @@ public class FirstResponderController {
 
     /* Retrieve flood information for given station numbers */
     @GetMapping("/flood/stations")
-    public ResponseEntity<List<Object>> getFloodInfo(@RequestParam List<String> stations) {
-        return ResponseEntity.ok(service.getFloodInfo(stations));
+    public ResponseEntity<List<HouseholdDto>> getFloodInfo(@RequestParam List<String> stations) {
+        List<HouseholdDto> result = service.getFloodInfo(stations);
+        return ResponseEntity.ok(result);
     }
 
 }
