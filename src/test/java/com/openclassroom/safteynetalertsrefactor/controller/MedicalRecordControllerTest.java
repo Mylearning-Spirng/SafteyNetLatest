@@ -25,13 +25,12 @@ class MedicalRecordControllerTest {
 
     private MockMvc mockMvc;
     private MedicalRecordsService medicalRecordsService;
-    private MedicalRecordController medicalRecordController;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         medicalRecordsService = Mockito.mock(MedicalRecordsService.class);
-        medicalRecordController = new MedicalRecordController(medicalRecordsService);
+        MedicalRecordController medicalRecordController = new MedicalRecordController(medicalRecordsService);
         mockMvc = MockMvcBuilders.standaloneSetup(medicalRecordController).build();
         objectMapper = new ObjectMapper();
     }

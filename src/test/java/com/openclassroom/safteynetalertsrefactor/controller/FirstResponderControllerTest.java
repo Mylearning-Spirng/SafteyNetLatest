@@ -1,124 +1,140 @@
 package com.openclassroom.safteynetalertsrefactor.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassroom.safteynetalertsrefactor.dto.ChildResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.dto.HouseholdDto;
 import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
 public class FirstResponderControllerTest {
 
-    @Mock
+    private MockMvc mockMvc;
     private FirstResponderService service;
+    private ObjectMapper objectMapper;
 
-    @InjectMocks
-    private FirstResponderController controller;
+    @BeforeEach
+    void setUp() {
+        service = Mockito.mock(FirstResponderService.class);
+        FirstResponderController controller = new FirstResponderController(service);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        objectMapper = new ObjectMapper();
+    }
 
     @Test
-    void getFirestation_returnsDto_and_callsService() {
+    void getFirestation_returnsDto_and_callsService() throws Exception {
         int stationNumber = 2;
-        FirstResponderDto dto = Mockito.mock(FirstResponderDto.class);
+        FirstResponderDto dto = new FirstResponderDto();
 
-        Mockito.when(service.getPersonsByStation(stationNumber)).thenReturn(dto);
+        when(service.getPersonsByStation(stationNumber)).thenReturn(dto);
 
-        FirstResponderDto result = controller.getFirestation(stationNumber);
+        mockMvc.perform(get("/firestation")
+                        .param("stationNumber", String.valueOf(stationNumber)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(dto)));
 
-        assertSame(dto, result);
         verify(service, times(1)).getPersonsByStation(stationNumber);
     }
 
     @Test
-    void getChildAlert_returnsList_and_callsService() {
+    void getChildAlert_returnsList_and_callsService() throws Exception {
         String address = "1509 Culver St";
-        List<ChildResidentDto> dtoList = List.of(Mockito.mock(ChildResidentDto.class));
+        List<ChildResidentDto> dtoList = List.of(new ChildResidentDto());
 
-        Mockito.when(service.getChildrenByAddress(address)).thenReturn(dtoList);
+        when(service.getChildrenByAddress(address)).thenReturn(dtoList);
 
-        List<ChildResidentDto> result = controller.getChildAlert(address);
+        mockMvc.perform(get("/childAlert")
+                        .param("address", address))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(dtoList)));
 
-        assertSame(dtoList, result);
         verify(service, times(1)).getChildrenByAddress(address);
     }
 
     @Test
-    void getPhoneAlert_returnsList_and_callsService() {
+    void getPhoneAlert_returnsList_and_callsService() throws Exception {
         int stationNumber = 3;
         List<String> phones = List.of("555-1234");
 
-        Mockito.when(service.getPhoneAlert(stationNumber)).thenReturn(phones);
+        when(service.getPhoneAlert(stationNumber)).thenReturn(phones);
 
-        List<String> result = controller.getPhoneAlert(stationNumber);
+        mockMvc.perform(get("/phoneAlert")
+                        .param("firestation", String.valueOf(stationNumber)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(phones)));
 
-        assertSame(phones, result);
         verify(service, times(1)).getPhoneAlert(stationNumber);
     }
 
     @Test
-    void getFire_returnsList_and_callsService() {
+    void getFire_returnsList_and_callsService() throws Exception {
         String address = "29 15th St";
-        List<ResidentDto> residents = List.of(Mockito.mock(ResidentDto.class));
+        List<ResidentDto> residents = List.of(new ResidentDto());
 
-        Mockito.when(service.getFireInfo(address)).thenReturn(residents);
+        when(service.getFireInfo(address)).thenReturn(residents);
 
-        List<ResidentDto> result = controller.getFire(address);
+        mockMvc.perform(get("/fire")
+                        .param("address", address))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(residents)));
 
-        assertSame(residents, result);
         verify(service, times(1)).getFireInfo(address);
     }
 
     @Test
-    void getCommunityEmail_returnsList_and_callsService() {
+    void getCommunityEmail_returnsList_and_callsService() throws Exception {
         String city = "Culver";
         List<String> emails = List.of("a@example.com");
 
-        Mockito.when(service.getCommunityEmail(city)).thenReturn(emails);
+        when(service.getCommunityEmail(city)).thenReturn(emails);
 
-        List<String> result = controller.getCommunityEmail(city);
+        mockMvc.perform(get("/communityEmail")
+                        .param("city", city))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(emails)));
 
-        assertSame(emails, result);
         verify(service, times(1)).getCommunityEmail(city);
     }
 
     @Test
-    void getPersonInfoByLastName_returnsList_and_callsService() {
+    void getPersonInfoByLastName_returnsList_and_callsService() throws Exception {
         String lastName = "Doe";
-        List<ResidentDto> residents = List.of(Mockito.mock(ResidentDto.class));
+        List<ResidentDto> residents = List.of(new ResidentDto());
 
-        Mockito.when(service.getResidentsByLastName(lastName)).thenReturn(residents);
+        when(service.getResidentsByLastName(lastName)).thenReturn(residents);
 
-        List<ResidentDto> result = controller.getPersonInfoByLastName(lastName);
+        mockMvc.perform(get("/personInfolastName={lastName}", lastName))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(residents)));
 
-        assertSame(residents, result);
         verify(service, times(1)).getResidentsByLastName(lastName);
     }
 
     @Test
-    void getFloodInfo_returnsResponse_and_callsService() {
+    void getFloodInfo_returnsResponse_and_callsService() throws Exception {
         List<String> stations = List.of("1", "2");
-        HouseholdDto dto = Mockito.mock(HouseholdDto.class);
-        List<HouseholdDto> floodData = List.of(dto);
+        List<HouseholdDto> floodData = List.of(new HouseholdDto());
 
-        Mockito.when(service.getFloodInfo(stations)).thenReturn(floodData);
+        when(service.getFloodInfo(stations)).thenReturn(floodData);
 
-        ResponseEntity<List<HouseholdDto>> response = controller.getFloodInfo(stations);
+        mockMvc.perform(get("/flood/stations")
+                        .param("stations", "1", "2"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(floodData)));
 
-        assertSame(floodData, response.getBody());
         verify(service, times(1)).getFloodInfo(stations);
     }
-
 }

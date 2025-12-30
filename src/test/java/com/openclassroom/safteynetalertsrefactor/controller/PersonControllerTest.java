@@ -25,13 +25,12 @@ class PersonControllerTest {
 
     private MockMvc mockMvc;
     private PersonService personService;
-    private PersonController personController;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         personService = Mockito.mock(PersonService.class);
-        personController = new PersonController(personService);
+        PersonController personController = new PersonController(personService);
         mockMvc = MockMvcBuilders.standaloneSetup(personController).build();
         objectMapper = new ObjectMapper();
     }

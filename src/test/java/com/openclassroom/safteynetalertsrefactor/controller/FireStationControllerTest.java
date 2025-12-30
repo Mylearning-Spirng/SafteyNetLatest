@@ -25,13 +25,12 @@ class FireStationControllerTest {
 
     private MockMvc mockMvc;
     private FireStationService firestationService;
-    private FireStationController firestationController;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         firestationService = Mockito.mock(FireStationService.class);
-        firestationController = new FireStationController(firestationService);
+        FireStationController firestationController = new FireStationController(firestationService);
         mockMvc = MockMvcBuilders.standaloneSetup(firestationController).build();
         objectMapper = new ObjectMapper();
     }
