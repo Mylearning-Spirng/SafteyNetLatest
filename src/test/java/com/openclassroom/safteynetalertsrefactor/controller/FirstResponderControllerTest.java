@@ -116,7 +116,7 @@ public class FirstResponderControllerTest {
 
         when(service.getResidentsByLastName(lastName)).thenReturn(residents);
 
-        mockMvc.perform(get("/personInfolastName={lastName}", lastName))
+        mockMvc.perform(get("/personInfo").param("lastName", "Doe"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(residents)));
 

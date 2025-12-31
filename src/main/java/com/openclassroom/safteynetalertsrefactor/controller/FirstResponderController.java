@@ -50,11 +50,13 @@ public class FirstResponderController {
         return service.getCommunityEmail(city);
     }
 
-    @GetMapping("/personInfolastName={lastName}")
-    public List<ResidentDto> getPersonInfoMalformed(@PathVariable String lastName) {
+    /* Retrieve person information by last name */
+    @GetMapping("/personInfo")
+    public List<ResidentDto> getPersonInfo(@RequestParam("lastName") String lastName) {
         return service.getResidentsByLastName(lastName);
     }
 
+    /* Retrieve flood information for given fire stations */
     @GetMapping("/flood/stations")
     public List<HouseholdDto> getFloodStations(@RequestParam("stations") List<String> stations) {
         return service.getFloodInfo(stations);
