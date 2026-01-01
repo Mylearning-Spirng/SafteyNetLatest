@@ -1,4 +1,3 @@
-// java
 package com.openclassroom.safteynetalertsrefactor.repository;
 
 import com.openclassroom.safteynetalertsrefactor.model.FireStation;

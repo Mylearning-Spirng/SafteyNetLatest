@@ -1,4 +1,3 @@
-// java
 package com.openclassroom.safteynetalertsrefactor.service;
 
 import com.openclassroom.safteynetalertsrefactor.dto.*;

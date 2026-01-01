@@ -58,6 +58,7 @@ public class FirstResponderService {
 
         // find all addresses served by this station
         List<String> addresses = new ArrayList<>();
+        // collect addresses for the given station number
         for (FireStation fs : fireStationRepository.findAll()) {
             if (fs != null && fs.getAddress() != null && stationNumber == fs.getStation()) {
                 addresses.add(fs.getAddress());
@@ -65,7 +66,8 @@ public class FirstResponderService {
         }
         log.debug("Found {} addresses for station {}", addresses.size(), stationNumber);
 
-        // for each person, check if address is in those addresses
+        // find all persons living at those addresses
+        /* if so, determine age and classify as adult/child */
         for (Person p : personRepository.findAll()) {
             if (addresses.contains(p.getAddress())) {
                 int age = calculateAgeOf(p.getFirstName(), p.getLastName());

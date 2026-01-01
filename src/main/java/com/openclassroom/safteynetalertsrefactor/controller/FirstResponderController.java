@@ -5,7 +5,6 @@ import com.openclassroom.safteynetalertsrefactor.dto.HouseholdDto;
 import com.openclassroom.safteynetalertsrefactor.dto.ResidentDto;
 import com.openclassroom.safteynetalertsrefactor.dto.FirstResponderDto;
 import com.openclassroom.safteynetalertsrefactor.service.FirstResponderService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
