@@ -4,16 +4,24 @@ import com.openclassroom.safteynetalertsrefactor.model.FireStation;
 import com.openclassroom.safteynetalertsrefactor.repository.FireStationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FireStationServiceTest {
 
+    @Mock
     private FireStationRepository fireStationRepository;
+
+    @InjectMocks
     private FireStationService fireStationService;
 
     private FireStation sample() {
@@ -21,12 +29,6 @@ class FireStationServiceTest {
         fs.setAddress("5665 Laurel pine rd");
         fs.setStation(5);
         return fs;
-    }
-
-    @BeforeEach
-    void setup() {
-        fireStationRepository = Mockito.mock(FireStationRepository.class);
-        fireStationService = new FireStationService(fireStationRepository);
     }
 
     @Test

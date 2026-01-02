@@ -2,12 +2,15 @@ package com.openclassroom.safteynetalertsrefactor.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@ExtendWith(MockitoExtension.class)
 class JSONFileReaderTest {
 
     private JSONFileReaderRepository jsonFileReaderRepository;

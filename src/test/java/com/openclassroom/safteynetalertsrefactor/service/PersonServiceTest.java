@@ -4,7 +4,11 @@ import com.openclassroom.safteynetalertsrefactor.model.Person;
 import com.openclassroom.safteynetalertsrefactor.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,16 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
 
+    @Mock
     private PersonRepository personRepository;
+    @InjectMocks
     private PersonService personService;
-
-    @BeforeEach
-    void setUp() {
-        personRepository = Mockito.mock(PersonRepository.class);
-        personService = new PersonService(personRepository);
-    }
 
     private Person samplePerson() {
         Person p = new Person();

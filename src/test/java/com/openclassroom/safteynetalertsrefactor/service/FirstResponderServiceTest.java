@@ -9,7 +9,11 @@ import com.openclassroom.safteynetalertsrefactor.repository.MedicalRecordsReposi
 import com.openclassroom.safteynetalertsrefactor.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
@@ -17,11 +21,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FirstResponderServiceTest {
 
+    @Mock
     private PersonRepository personRepository;
+    @Mock
     private FireStationRepository fireStationRepository;
+    @Mock
     private MedicalRecordsRepository medicalRecordRepository;
+
+    @InjectMocks
     private FirstResponderService service;
 
     private static FireStation fs(String addr, int station) {
@@ -50,14 +60,6 @@ class FirstResponderServiceTest {
         m.setMedications(meds);
         m.setAllergies(allergies);
         return m;
-    }
-
-    @BeforeEach
-    void setup() {
-        personRepository = Mockito.mock(PersonRepository.class);
-        fireStationRepository = Mockito.mock(FireStationRepository.class);
-        medicalRecordRepository = Mockito.mock(MedicalRecordsRepository.class);
-        service = new FirstResponderService(personRepository, fireStationRepository, medicalRecordRepository);
     }
 
     @Test
